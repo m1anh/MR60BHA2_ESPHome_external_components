@@ -9,11 +9,11 @@ CODEOWNERS = ["@limengdu"]
 # The current component or platform can be configured or defined multiple times in the same configuration file.
 MULTI_CONF = True
 
-# This line of code creates a new namespace called mr60fda2_ns.
-# This namespace will be used as a prefix for all classes, functions and variables associated with the mr60fda2_ns component, ensuring that they do not conflict with the names of other components.
-mr60fda2_ns = cg.esphome_ns.namespace("seeed_mr60bha2")
+# This line of code creates a new namespace called mr60bha2_ns.
+# This namespace will be used as a prefix for all classes, functions and variables associated with the mr60bha2_ns component, ensuring that they do not conflict with the names of other components.
+mr60bha2_ns = cg.esphome_ns.namespace("seeed_mr60bha2")
 # This MR24HPC1Component class will be a periodically polled UART device
-MR60BHA2Component = mr60fda2_ns.class_(
+MR60BHA2Component = mr60bha2_ns.class_(
     "MR60BHA2Component", cg.Component, uart.UARTDevice
 )
 

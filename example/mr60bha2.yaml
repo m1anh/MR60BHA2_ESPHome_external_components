@@ -19,24 +19,8 @@ esp32:
   flash_size: 4MB # upload.flash_size
   framework:
     type: esp-idf
-    platform_version: 6.5.0 # Need at least 6.4 for ESP32-C6
-
-    # Tasmota's release of 5.1.3 works, first-party release does not LOL
-    version: 5.1.3
-    source: https://github.com/tasmota/esp-idf/releases/download/v5.1.3.240325/esp-idf-v5.1.3.zip
-
-    # Fix flash size by ensuring IDF flash size is also set (was defaulting to 2MB?!?)
-    # See https://github.com/esphome/issues/issues/5404
-    sdkconfig_options:
-      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
 
 external_components:
-  - source:
-      type: git
-      url: https://github.com/ssieb/esphome
-      ref: adc
-    components: [ adc ]
-    refresh: 1min
   - source:
       type: git
       url: https://github.com/limengdu/MR60BHA2_ESPHome_external_components

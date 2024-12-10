@@ -6,7 +6,6 @@ esphome:
   name: "${name}"
   friendly_name: "${friendly_name}"
   name_add_mac_suffix: true
-  version: "2024.12.0-dev"
   project:
     name: "seeedstudio.mr60bha2_kit"
     version: "2.0"

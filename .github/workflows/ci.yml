@@ -21,7 +21,7 @@ jobs:
         file:
           - Seeed Studio MR60BHA2
         esphome-version:
-          - stable
+          - dev
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4.1.7

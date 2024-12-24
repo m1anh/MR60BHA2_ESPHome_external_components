@@ -41,7 +41,7 @@ enum FrameLocation {
 class MR60BHA2Component : public Component,
                           public uart::UARTDevice {  // The class name must be the name defined by text_sensor.py
 #ifdef USE_BINARY_SENSOR
-  SUB_BINARY_SENSOR(people_exist)
+  SUB_BINARY_SENSOR(people_exist);
 #endif
 #ifdef USE_SENSOR
   SUB_SENSOR(breath_rate);

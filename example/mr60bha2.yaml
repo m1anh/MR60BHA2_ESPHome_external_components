@@ -96,3 +96,5 @@ sensor:
       name: "Real-time heart rate"
     distance:
       name: "Distance to detection object"
+    target_num:
+      name: "Target Number"

@@ -26,6 +26,7 @@ static const uint16_t BREATH_RATE_TYPE_BUFFER = 0x0A14;
 static const uint16_t PEOPLE_EXIST_TYPE_BUFFER = 0x0F09;
 static const uint16_t HEART_RATE_TYPE_BUFFER = 0x0A15;
 static const uint16_t DISTANCE_TYPE_BUFFER = 0x0A16;
+static const uint16_t PRINT_CLOUD_BUFFER = 0x0A04;
 
 enum FrameLocation {
   LOCATE_FRAME_HEADER,
@@ -50,6 +51,7 @@ class MR60BHA2Component : public Component,
   SUB_SENSOR(breath_rate);
   SUB_SENSOR(heart_rate);
   SUB_SENSOR(distance);
+  SUB_SENSOR(target_num);
 #endif
 
  public:

@@ -20,6 +20,7 @@ void MR60BHA2Component::dump_config() {
   LOG_SENSOR(" ", "Breath Rate Sensor", this->breath_rate_sensor_);
   LOG_SENSOR(" ", "Heart Rate Sensor", this->heart_rate_sensor_);
   LOG_SENSOR(" ", "Distance Sensor", this->distance_sensor_);
+  LOG_SENSOR(" ", "Target Number Sensor", this->target_num_sensor_);
 #endif
 }
 
@@ -98,7 +99,8 @@ bool MR60BHA2Component::validate_message_() {
   uint16_t frame_type = encode_uint16(data[5], data[6]);
 
   if (frame_type != BREATH_RATE_TYPE_BUFFER && frame_type != HEART_RATE_TYPE_BUFFER &&
-      frame_type != DISTANCE_TYPE_BUFFER && frame_type != PEOPLE_EXIST_TYPE_BUFFER) {
+      frame_type != DISTANCE_TYPE_BUFFER && frame_type != PEOPLE_EXIST_TYPE_BUFFER &&
+      frame_type != PRINT_CLOUD_BUFFER) {
     return false;
   }
 
@@ -177,6 +179,12 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
           memcpy(&distance_float, &current_distance_int, sizeof(float));
           this->distance_sensor_->publish_state(distance_float);
         }
+      }
+      break;
+    case PRINT_CLOUD_BUFFER:
+      if (this->target_num_sensor_ != nullptr && length >= 4) {
+        uint32_t current_target_num_int = encode_uint32(data[3], data[2], data[1], data[0]);
+        this->target_num_sensor_->publish_state(current_target_num_int);
       }
       break;
     default:

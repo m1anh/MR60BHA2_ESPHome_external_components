@@ -3,10 +3,12 @@ from esphome.components import sensor
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_DISTANCE,
+    CONF_COUNT,
     DEVICE_CLASS_DISTANCE,
     ICON_HEART_PULSE,
     ICON_PULSE,
     ICON_SIGNAL,
+    ICON_COUNTER,
     STATE_CLASS_MEASUREMENT,
     UNIT_BEATS_PER_MINUTE,
     UNIT_CENTIMETER,
@@ -18,6 +20,7 @@ DEPENDENCIES = ["seeed_mr60bha2"]
 
 CONF_BREATH_RATE = "breath_rate"
 CONF_HEART_RATE = "heart_rate"
+CONF_TARGET_NUM = "target_num"
 
 CONFIG_SCHEMA = cv.Schema(
     {
@@ -40,6 +43,10 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=2,
             icon=ICON_SIGNAL,
         ),
+        cv.Optional(CONF_TARGET_NUM): sensor.sensor_schema(
+            device_class=CONF_COUNT,
+            icon=ICON_COUNTER,
+        ),
     }
 )
 
@@ -55,3 +62,6 @@ async def to_code(config):
     if distance_config := config.get(CONF_DISTANCE):
         sens = await sensor.new_sensor(distance_config)
         cg.add(mr60bha2_component.set_distance_sensor(sens))
+    if target_num_config := config.get(CONF_TARGET_NUM):
+        sens = await sensor.new_sensor(target_num_config)
+        cg.add(mr60bha2_component.set_target_num_sensor(sens))

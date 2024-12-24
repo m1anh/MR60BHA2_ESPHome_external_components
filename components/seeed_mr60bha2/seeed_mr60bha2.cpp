@@ -158,6 +158,7 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
           this->breath_rate_sensor_->publish_state(0.0);
           this->heart_rate_sensor_->publish_state(0.0);
           this->distance_sensor_->publish_state(0.0);
+          this->target_num_sensor_->publish_state(0);
         }
       }
       break;
@@ -182,9 +183,7 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       }
       break;
     case PRINT_CLOUD_BUFFER:
-      ESP_LOGE(TAG, "Target num receive!!!!!!");
       if (this->target_num_sensor_ != nullptr && length >= 4) {
-        ESP_LOGE(TAG, "Target num receive!!!!!!");
         uint32_t current_target_num_int = encode_uint32(data[3], data[2], data[1], data[0]);
         this->target_num_sensor_->publish_state(current_target_num_int);
       }

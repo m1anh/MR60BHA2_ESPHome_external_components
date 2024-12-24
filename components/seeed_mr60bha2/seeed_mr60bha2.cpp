@@ -152,6 +152,11 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       if (this->people_exist_binary_sensor_ != nullptr && length >= 2) {
         uint16_t people_exist_int = encode_uint16(data[1], data[0]);
         this->people_exist_binary_sensor_->publish_state(people_exist_int);
+        if (people_exist_int == 0) {
+          this->breath_rate_sensor_->publish_state(0.0);
+          this->heart_rate_sensor_->publish_state(0.0);
+          this->distance_sensor_->publish_state(0.0);
+        }
       }
       break;
     case HEART_RATE_TYPE_BUFFER:

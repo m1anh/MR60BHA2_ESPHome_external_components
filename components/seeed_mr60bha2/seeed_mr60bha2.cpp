@@ -140,47 +140,47 @@ bool MR60BHA2Component::validate_message_() {
 
 void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, const uint8_t *data, size_t length) {
   switch (frame_type) {
-    case BREATH_RATE_TYPE_BUFFER:
-      if (this->breath_rate_sensor_ != nullptr && length >= 4) {
-        uint32_t current_breath_rate_int = encode_uint32(data[3], data[2], data[1], data[0]);
-        if (current_breath_rate_int != 0) {
-          float breath_rate_float;
-          memcpy(&breath_rate_float, &current_breath_rate_int, sizeof(float));
-          this->breath_rate_sensor_->publish_state(breath_rate_float);
-        }
-      }
-      break;
-    case PEOPLE_EXIST_TYPE_BUFFER:
-      if (this->people_exist_binary_sensor_ != nullptr && length >= 2) {
-        uint16_t people_exist_int = encode_uint16(data[1], data[0]);
-        this->people_exist_binary_sensor_->publish_state(people_exist_int);
-        if (people_exist_int == 0) {
-          this->breath_rate_sensor_->publish_state(0.0);
-          this->heart_rate_sensor_->publish_state(0.0);
-          this->distance_sensor_->publish_state(0.0);
-        }
-      }
-      break;
-    case HEART_RATE_TYPE_BUFFER:
-      if (this->heart_rate_sensor_ != nullptr && length >= 4) {
-        uint32_t current_heart_rate_int = encode_uint32(data[3], data[2], data[1], data[0]);
-        if (current_heart_rate_int != 0) {
-          float heart_rate_float;
-          memcpy(&heart_rate_float, &current_heart_rate_int, sizeof(float));
-          this->heart_rate_sensor_->publish_state(heart_rate_float);
-        }
-      }
-      break;
-    case DISTANCE_TYPE_BUFFER:
-      if (data[0] != 0) {
-        if (this->distance_sensor_ != nullptr && length >= 8) {
-          uint32_t current_distance_int = encode_uint32(data[7], data[6], data[5], data[4]);
-          float distance_float;
-          memcpy(&distance_float, &current_distance_int, sizeof(float));
-          this->distance_sensor_->publish_state(distance_float);
-        }
-      }
-      break;
+    // case BREATH_RATE_TYPE_BUFFER:
+    //   if (this->breath_rate_sensor_ != nullptr && length >= 4) {
+    //     uint32_t current_breath_rate_int = encode_uint32(data[3], data[2], data[1], data[0]);
+    //     if (current_breath_rate_int != 0) {
+    //       float breath_rate_float;
+    //       memcpy(&breath_rate_float, &current_breath_rate_int, sizeof(float));
+    //       this->breath_rate_sensor_->publish_state(breath_rate_float);
+    //     }
+    //   }
+    //   break;
+    // case PEOPLE_EXIST_TYPE_BUFFER:
+    //   if (this->people_exist_binary_sensor_ != nullptr && length >= 2) {
+    //     uint16_t people_exist_int = encode_uint16(data[1], data[0]);
+    //     this->people_exist_binary_sensor_->publish_state(people_exist_int);
+    //     if (people_exist_int == 0) {
+    //       this->breath_rate_sensor_->publish_state(0.0);
+    //       this->heart_rate_sensor_->publish_state(0.0);
+    //       this->distance_sensor_->publish_state(0.0);
+    //     }
+    //   }
+    //   break;
+    // case HEART_RATE_TYPE_BUFFER:
+    //   if (this->heart_rate_sensor_ != nullptr && length >= 4) {
+    //     uint32_t current_heart_rate_int = encode_uint32(data[3], data[2], data[1], data[0]);
+    //     if (current_heart_rate_int != 0) {
+    //       float heart_rate_float;
+    //       memcpy(&heart_rate_float, &current_heart_rate_int, sizeof(float));
+    //       this->heart_rate_sensor_->publish_state(heart_rate_float);
+    //     }
+    //   }
+    //   break;
+    // case DISTANCE_TYPE_BUFFER:
+    //   if (data[0] != 0) {
+    //     if (this->distance_sensor_ != nullptr && length >= 8) {
+    //       uint32_t current_distance_int = encode_uint32(data[7], data[6], data[5], data[4]);
+    //       float distance_float;
+    //       memcpy(&distance_float, &current_distance_int, sizeof(float));
+    //       this->distance_sensor_->publish_state(distance_float);
+    //     }
+    //   }
+    //   break;
     case PRINT_CLOUD_BUFFER:
       if (this->target_num_sensor_ != nullptr && length >= 4) {
         uint32_t current_target_num_int = encode_uint32(data[3], data[2], data[1], data[0]);

@@ -149,7 +149,7 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       }
       break;
     case PEOPLE_EXIST_TYPE_BUFFER:
-      if (this->people_exist_binary_sensor_ != nullptr && length > 2) {
+      if (this->people_exist_binary_sensor_ != nullptr && length >= 2) {
         uint16_t people_exist_int = encode_uint16(data[1], data[0]);
         this->people_exist_binary_sensor_->publish_state(people_exist_int);
       }
@@ -165,7 +165,7 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       }
       break;
     case DISTANCE_TYPE_BUFFER:
-      if (!data[0]) {
+      if (data[0] != 0) {
         if (this->distance_sensor_ != nullptr && length >= 8) {
           uint32_t current_distance_int = encode_uint32(data[7], data[6], data[5], data[4]);
           float distance_float;

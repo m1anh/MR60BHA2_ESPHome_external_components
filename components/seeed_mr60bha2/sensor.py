@@ -3,7 +3,6 @@ from esphome.components import sensor
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_DISTANCE,
-    CONF_COUNT,
     DEVICE_CLASS_DISTANCE,
     ICON_HEART_PULSE,
     ICON_PULSE,
@@ -44,7 +43,6 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_SIGNAL,
         ),
         cv.Optional(CONF_TARGET_NUM): sensor.sensor_schema(
-            device_class=CONF_COUNT,
             icon=ICON_COUNTER,
         ),
     }

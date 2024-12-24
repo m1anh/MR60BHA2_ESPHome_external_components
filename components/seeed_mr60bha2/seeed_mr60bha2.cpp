@@ -1,6 +1,7 @@
 #include "seeed_mr60bha2.h"
 #include "esphome/core/log.h"
 
+#include <cinttypes>
 #include <utility>
 
 namespace esphome {

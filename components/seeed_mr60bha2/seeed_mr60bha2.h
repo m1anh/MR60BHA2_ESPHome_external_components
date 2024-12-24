@@ -20,6 +20,7 @@ static const uint8_t LEN_TO_DATA_FRAME = 9;
 
 static const uint8_t FRAME_HEADER_BUFFER = 0x01;
 static const uint16_t BREATH_RATE_TYPE_BUFFER = 0x0A14;
+static const uint16_t PEOPLE_EXIST_TYPE_BUFFER = 0x0F09;
 static const uint16_t HEART_RATE_TYPE_BUFFER = 0x0A15;
 static const uint16_t DISTANCE_TYPE_BUFFER = 0x0A16;
 
@@ -39,6 +40,9 @@ enum FrameLocation {
 
 class MR60BHA2Component : public Component,
                           public uart::UARTDevice {  // The class name must be the name defined by text_sensor.py
+#ifdef USE_BINARY_SENSOR
+  SUB_BINARY_SENSOR(people_exist)
+#endif
 #ifdef USE_SENSOR
   SUB_SENSOR(breath_rate);
   SUB_SENSOR(heart_rate);

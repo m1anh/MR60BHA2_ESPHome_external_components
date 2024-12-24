@@ -12,6 +12,9 @@ static const char *const TAG = "seeed_mr60bha2";
 // items in an easy-to-read format, including the configuration key-value pairs.
 void MR60BHA2Component::dump_config() {
   ESP_LOGCONFIG(TAG, "MR60BHA2:");
+#ifdef USE_BINARY_SENSOR
+  LOG_BINARY_SENSOR(" ", "People Exist Binary Sensor", this->people_exist_binary_sensor_);
+#endif
 #ifdef USE_SENSOR
   LOG_SENSOR(" ", "Breath Rate Sensor", this->breath_rate_sensor_);
   LOG_SENSOR(" ", "Heart Rate Sensor", this->heart_rate_sensor_);
@@ -94,7 +97,7 @@ bool MR60BHA2Component::validate_message_() {
   uint16_t frame_type = encode_uint16(data[5], data[6]);
 
   if (frame_type != BREATH_RATE_TYPE_BUFFER && frame_type != HEART_RATE_TYPE_BUFFER &&
-      frame_type != DISTANCE_TYPE_BUFFER) {
+      frame_type != DISTANCE_TYPE_BUFFER && frame_type != PEOPLE_EXIST_TYPE_BUFFER) {
     return false;
   }
 
@@ -142,6 +145,12 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
           memcpy(&breath_rate_float, &current_breath_rate_int, sizeof(float));
           this->breath_rate_sensor_->publish_state(breath_rate_float);
         }
+      }
+      break;
+    case PEOPLE_EXIST_TYPE_BUFFER:
+      if (this->people_exist_binary_sensor_ != nullptr && lengh > 2) {
+        uint16_t people_exist_int = encode_uint16(data[1], data[0]);
+        this->people_exist_binary_sensor_->publish_state(people_exist_int);
       }
       break;
     case HEART_RATE_TYPE_BUFFER:

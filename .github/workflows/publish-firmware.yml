@@ -14,7 +14,7 @@ jobs:
     with:
       #### Modify below here to match your project ####
       files: example/mr60bha2.yaml
-      esphome-version: 2024.12.3
+      esphome-version: 2024.12.2
       # combined-name: Seeed Studio MR60BHA2 Sensor
       #### Modify above here to match your project ####
 

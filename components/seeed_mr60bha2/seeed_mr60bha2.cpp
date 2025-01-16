@@ -144,7 +144,7 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       if (this->breath_rate_sensor_ != nullptr && length >= 4) {
         uint32_t current_breath_rate_int = encode_uint32(data[3], data[2], data[1], data[0]);
         if (current_breath_rate_int != 0) {
-          int breath_rate_float;
+          float breath_rate_float;
           memcpy(&breath_rate_float, &current_breath_rate_int, sizeof(float));
           this->breath_rate_sensor_->publish_state(breath_rate_float);
         }

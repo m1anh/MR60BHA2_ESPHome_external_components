@@ -25,12 +25,10 @@ CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_MR60BHA2_ID): cv.use_id(MR60BHA2Component),
         cv.Optional(CONF_BREATH_RATE): sensor.sensor_schema(
-            accuracy_decimals=2,
             state_class=STATE_CLASS_MEASUREMENT,
             icon=ICON_PULSE,
         ),
         cv.Optional(CONF_HEART_RATE): sensor.sensor_schema(
-            accuracy_decimals=0,
             icon=ICON_HEART_PULSE,
             state_class=STATE_CLASS_MEASUREMENT,
             unit_of_measurement=UNIT_BEATS_PER_MINUTE,

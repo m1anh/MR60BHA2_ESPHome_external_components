@@ -144,9 +144,9 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       if (this->breath_rate_sensor_ != nullptr && length >= 4) {
         uint32_t current_breath_rate_int = encode_uint32(data[3], data[2], data[1], data[0]);
         if (current_breath_rate_int != 0) {
-          float breath_rate_float;
-          memcpy(&breath_rate_float, &current_breath_rate_int, sizeof(float));
-          this->breath_rate_sensor_->publish_state(breath_rate_float);
+          int breath_rate_int;
+          memcpy(&breath_rate_int, &current_breath_rate_int, sizeof(int));
+          this->breath_rate_sensor_->publish_state(breath_rate_int);
         }
       }
       break;
@@ -166,15 +166,15 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       if (this->heart_rate_sensor_ != nullptr && length >= 4) {
         uint32_t current_heart_rate_int = encode_uint32(data[3], data[2], data[1], data[0]);
         if (current_heart_rate_int != 0) {
-          float heart_rate_float;
-          memcpy(&heart_rate_float, &current_heart_rate_int, sizeof(float));
-          this->heart_rate_sensor_->publish_state(heart_rate_float);
+          int heart_rate_int;
+          memcpy(&heart_rate_int, &current_heart_rate_int, sizeof(int));
+          this->heart_rate_sensor_->publish_state(heart_rate_int);
         }
       }
       break;
     case DISTANCE_TYPE_BUFFER:
       if (data[0] != 0) {
-        if (this->distance_sensor_ != nullptr && length >= 8) {
+        if (this->distance_sensor_ != nullptr && length >= 4) {
           uint32_t current_distance_int = encode_uint32(data[7], data[6], data[5], data[4]);
           float distance_float;
           memcpy(&distance_float, &current_distance_int, sizeof(float));

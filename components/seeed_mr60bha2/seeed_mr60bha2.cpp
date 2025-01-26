@@ -144,10 +144,18 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
         uint16_t people_exist_int = encode_uint16(data[1], data[0]);
         this->people_exist_binary_sensor_->publish_state(people_exist_int);
         if (people_exist_int == 0) {
-          this->breath_rate_sensor_->publish_state(0.0);
-          this->heart_rate_sensor_->publish_state(0.0);
-          this->distance_sensor_->publish_state(0.0);
-          this->target_num_sensor_->publish_state(0);
+          if (this->breath_rate_sensor_ != nullptr) {
+            this->breath_rate_sensor_->publish_state(0.0);
+          }
+          if (this->heart_rate_sensor_ != nullptr) {
+            this->heart_rate_sensor_->publish_state(0.0);
+          }
+          if (this->distance_sensor_ != nullptr) {
+            this->distance_sensor_->publish_state(0.0);
+          }
+          if (this->target_num_sensor_ != nullptr) {
+            this->target_num_sensor_->publish_state(0);
+          }
         }
       }
       break;

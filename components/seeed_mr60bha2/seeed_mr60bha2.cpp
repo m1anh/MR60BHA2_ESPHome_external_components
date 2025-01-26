@@ -75,22 +75,10 @@ static bool validate_checksum(const uint8_t *data, size_t len, uint8_t expected_
 bool MR60BHA2Component::validate_message_() {
   size_t at = this->rx_message_.size() - 1;
   auto *data = &this->rx_message_[0];
-  uint8_t new_byte = data[at];
 
   if (at == 0) {
-    return new_byte == FRAME_HEADER_BUFFER;
+    return data[at] == FRAME_HEADER_BUFFER;
   }
-
-  if (at <= 2) {
-    return true;
-  }
-  uint16_t frame_id = encode_uint16(data[1], data[2]);
-
-  if (at <= 4) {
-    return true;
-  }
-
-  uint16_t length = encode_uint16(data[3], data[4]);
 
   if (at <= 6) {
     return true;
@@ -104,11 +92,11 @@ bool MR60BHA2Component::validate_message_() {
     return false;
   }
 
-  uint8_t header_checksum = new_byte;
+  uint8_t checksum = data[at];
 
   if (at == 7) {
-    if (!validate_checksum(data, 7, header_checksum)) {
-      ESP_LOGE(TAG, "HEAD_CKSUM_FRAME ERROR: 0x%02x", header_checksum);
+    if (!validate_checksum(data, 7, checksum)) {
+      ESP_LOGE(TAG, "HEAD_CKSUM_FRAME ERROR: 0x%02x", checksum);
       ESP_LOGV(TAG, "GET FRAME: %s", format_hex_pretty(data, 8).c_str());
       return false;
     }
@@ -116,19 +104,20 @@ bool MR60BHA2Component::validate_message_() {
   }
 
   // Wait until all data is read
+  uint16_t length = encode_uint16(data[3], data[4]);
   if (at - 8 < length) {
     return true;
   }
 
-  uint8_t data_checksum = new_byte;
   if (at == 8 + length) {
-    if (!validate_checksum(data + 8, length, data_checksum)) {
-      ESP_LOGE(TAG, "DATA_CKSUM_FRAME ERROR: 0x%02x", data_checksum);
+    if (!validate_checksum(data + 8, length, checksum)) {
+      ESP_LOGE(TAG, "DATA_CKSUM_FRAME ERROR: 0x%02x", checksum);
       ESP_LOGV(TAG, "GET FRAME: %s", format_hex_pretty(data, 8 + length).c_str());
       return false;
     }
   }
 
+  uint16_t frame_id = encode_uint16(data[1], data[2]);
   const uint8_t *frame_data = data + 8;
   ESP_LOGV(TAG, "Received Frame: ID: 0x%04x, Type: 0x%04x, Data: [%s] Raw Data: [%s]", frame_id, frame_type,
            format_hex_pretty(frame_data, length).c_str(), format_hex_pretty(this->rx_message_).c_str());

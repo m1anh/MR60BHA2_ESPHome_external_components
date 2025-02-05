@@ -14,13 +14,13 @@ static const char *const TAG = "seeed_mr60bha2";
 void MR60BHA2Component::dump_config() {
   ESP_LOGCONFIG(TAG, "MR60BHA2:");
 #ifdef USE_BINARY_SENSOR
-  LOG_BINARY_SENSOR(" ", "People Exist Binary Sensor", this->people_exist_binary_sensor_);
+  LOG_BINARY_SENSOR(" ", "People Exist Binary Sensor", this->has_target_binary_sensor_);
 #endif
 #ifdef USE_SENSOR
   LOG_SENSOR(" ", "Breath Rate Sensor", this->breath_rate_sensor_);
   LOG_SENSOR(" ", "Heart Rate Sensor", this->heart_rate_sensor_);
   LOG_SENSOR(" ", "Distance Sensor", this->distance_sensor_);
-  LOG_SENSOR(" ", "Target Number Sensor", this->target_num_sensor_);
+  LOG_SENSOR(" ", "Target Number Sensor", this->num_targets_sensor_);
 #endif
 }
 
@@ -92,11 +92,11 @@ bool MR60BHA2Component::validate_message_() {
     return false;
   }
 
-  uint8_t checksum = data[at];
+  uint8_t header_checksum = data[at];
 
   if (at == 7) {
-    if (!validate_checksum(data, 7, checksum)) {
-      ESP_LOGE(TAG, "HEAD_CKSUM_FRAME ERROR: 0x%02x", checksum);
+    if (!validate_checksum(data, 7, header_checksum)) {
+      ESP_LOGE(TAG, "HEAD_CKSUM_FRAME ERROR: 0x%02x", header_checksum);
       ESP_LOGV(TAG, "GET FRAME: %s", format_hex_pretty(data, 8).c_str());
       return false;
     }
@@ -109,9 +109,10 @@ bool MR60BHA2Component::validate_message_() {
     return true;
   }
 
+  uint8_t data_checksum = data[at];
   if (at == 8 + length) {
-    if (!validate_checksum(data + 8, length, checksum)) {
-      ESP_LOGE(TAG, "DATA_CKSUM_FRAME ERROR: 0x%02x", checksum);
+    if (!validate_checksum(data + 8, length, data_checksum)) {
+      ESP_LOGE(TAG, "DATA_CKSUM_FRAME ERROR: 0x%02x", data_checksum);
       ESP_LOGV(TAG, "GET FRAME: %s", format_hex_pretty(data, 8 + length).c_str());
       return false;
     }
@@ -128,11 +129,11 @@ bool MR60BHA2Component::validate_message_() {
 }
 
 void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, const uint8_t *data, size_t length) {
-  if (this->people_exist_binary_sensor_ != nullptr && this->people_exist_binary_sensor_->state == false && frame_type != PEOPLE_EXIST_TYPE_BUFFER) {
+  if (this->has_target_binary_sensor_ != nullptr && this->has_target_binary_sensor_->state == false &&
+      frame_type != PEOPLE_EXIST_TYPE_BUFFER) {
     // Do not process other frames while people exists sensor is still false
     return;
   }
-
   switch (frame_type) {
     case BREATH_RATE_TYPE_BUFFER:
       if (this->breath_rate_sensor_ != nullptr && length >= 4) {
@@ -148,13 +149,13 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       }
       break;
     case PEOPLE_EXIST_TYPE_BUFFER:
-      if (this->people_exist_binary_sensor_ != nullptr && length >= 2) {
-        uint16_t people_exist_int = encode_uint16(data[1], data[0]);
-        if (this->people_exist_binary_sensor_->state == people_exist_int) {
+      if (this->has_target_binary_sensor_ != nullptr && length >= 2) {
+        uint16_t has_target_int = encode_uint16(data[1], data[0]);
+        if (this->has_target_binary_sensor_->state == has_target_int) {
           break;
         }
-        this->people_exist_binary_sensor_->publish_state(people_exist_int);
-        if (people_exist_int == 0) {
+        this->has_target_binary_sensor_->publish_state(has_target_int);
+        if (has_target_int == 0) {
           if (this->breath_rate_sensor_ != nullptr && this->breath_rate_sensor_->state != 0.0) {
             this->breath_rate_sensor_->publish_state(0.0);
           }
@@ -164,8 +165,8 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
           if (this->distance_sensor_ != nullptr && this->distance_sensor_->state != 0.0) {
             this->distance_sensor_->publish_state(0.0);
           }
-          if (this->target_num_sensor_ != nullptr && this->target_num_sensor_->state != 0) {
-            this->target_num_sensor_->publish_state(0);
+          if (this->num_targets_sensor_ != nullptr && this->num_targets_sensor_->state != 0) {
+            this->num_targets_sensor_->publish_state(0);
           }
         }
       }
@@ -197,12 +198,12 @@ void MR60BHA2Component::process_frame_(uint16_t frame_id, uint16_t frame_type, c
       }
       break;
     case PRINT_CLOUD_BUFFER:
-      if (this->target_num_sensor_ != nullptr && length >= 4) {
-        uint32_t current_target_num_int = encode_uint32(data[3], data[2], data[1], data[0]);
-        if (this->target_num_sensor_->state == current_target_num_int) {
+      if (this->num_targets_sensor_ != nullptr && length >= 4) {
+        uint32_t current_num_targets_int = encode_uint32(data[3], data[2], data[1], data[0]);
+        if (this->num_targets_sensor_->state == current_num_targets_int) {
           break;
         }
-        this->target_num_sensor_->publish_state(current_target_num_int);
+        this->num_targets_sensor_->publish_state(current_num_targets_int);
       }
       break;
     default:

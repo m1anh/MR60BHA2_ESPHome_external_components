@@ -304,6 +304,10 @@ By utilizing ESPHome, you empower yourself to make ongoing improvements to your 
 
 Through these steps, you can maximize the functionality of your MR60BHA2 mmWave Sensor and XIAO ESP32C6 setup, transforming it into a highly customized and responsive smart home system tailored to your preferences and needs.
 
+:::note Attention
+Zone control & modifying mmwv sensor firmware is only accessible by businesses in partnership with Seeed Studios & not available to home users. Home users are limited to basic presence, target number, distance, heartrate & tweaking ESPhome firmware, which modifies the ESP32-C6 microcontrolller.
+:::
+
 ## Resources
 
 - [ESPHome — ESPHome](https://esphome.io/)
